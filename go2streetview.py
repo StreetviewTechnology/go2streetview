@@ -62,18 +62,18 @@ class go2streetview(gui.QgsMapTool):
     def initGui(self):
         # Create actions that will start plugin configuration
         self.StreetviewAction = QtWidgets.QAction(QtGui.QIcon(":/plugins/go2streetview/res/icoStreetview.png"), \
-            "Click to open Google Street View", self.iface.mainWindow())
+            "Click to open Streetview", self.iface.mainWindow())
         self.StreetviewAction.triggered.connect(self.StreetviewRun)
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.StreetviewAction)
-        self.iface.addPluginToWebMenu("&go2streetview", self.StreetviewAction)
+        self.iface.addPluginToWebMenu("&Applied Streetview go2streetview", self.StreetviewAction)
         self.dirPath = os.path.dirname( os.path.abspath( __file__ ) )
         self.actualPOV = {}
         self.view = go2streetviewDialog()
         self.dumView = dumWidget()
         self.dumView.enter.connect(self.clickOn)
         self.dumView.iconRif.setPixmap(QtGui.QPixmap(":/plugins/go2streetview/res/icoStreetview.png"))
-        self.apdockwidget=QtWidgets.QDockWidget("go2streetview" , self.iface.mainWindow() )
+        self.apdockwidget=QtWidgets.QDockWidget("Applied Streetview go2streetview" , self.iface.mainWindow() )
         self.apdockwidget.setObjectName("go2streetview")
         self.apdockwidget.setWidget(self.dumView)
         self.iface.addDockWidget( QtCore.Qt.LeftDockWidgetArea, self.apdockwidget)
@@ -158,40 +158,54 @@ class go2streetview(gui.QgsMapTool):
         self.view.btnSwitchView.clicked.connect(self.switchViewAction)
         #contextMenu
         contextMenu = QtWidgets.QMenu()
+        self.aboutItem = contextMenu.addAction("Change Project")
+        self.aboutItem.triggered.connect(self.aboutAction)
         self.openInBrowserItem = contextMenu.addAction(QtGui.QIcon(os.path.join(self.dirPath,"res","browser.png")),"Open in external browser")
+        self.openInBrowserItem.setVisible(False)
         self.openInBrowserItem.triggered.connect(self.openInBrowserAction)
         self.takeSnapshopItem = contextMenu.addAction(QtGui.QIcon(os.path.join(self.dirPath,"res","images.png")),"Take a panorama snaphot")
+        self.takeSnapshopItem.setVisible(False)
         self.takeSnapshopItem.triggered.connect(self.takeSnapshopAction)
         self.infoLayerItem = contextMenu.addAction(QtGui.QIcon(os.path.join(self.dirPath,"res","markers.png")),"Add info layer")
+        self.infoLayerItem.setVisible(False)
         self.infoLayerItem.triggered.connect(self.infoLayerAction)
         self.printItem = contextMenu.addAction(QtGui.QIcon(os.path.join(self.dirPath,"res","print.png")),"Print keymap leaflet")
+        self.printItem.setVisible(False)
         self.printItem.triggered.connect(self.printAction)
-        contextMenu.addSeparator()
+        """ contextMenu.addSeparator() """
         optionsMenu = contextMenu.addMenu("Options")
         self.showCoverage = optionsMenu.addAction("Show streetview coverage")
+        self.showCoverage.setVisible(False)
         self.showCoverage.setCheckable(True)
         self.showCoverage.setChecked(False)
-        optionsMenu.addSeparator()
+        """ optionsMenu.addSeparator() """
         self.checkFollow = optionsMenu.addAction("Map follows Streetview")
+        self.checkFollow.setVisible(False)
         self.checkFollow.setCheckable(True)
         self.checkFollow.setChecked(False)
-        optionsMenu.addSeparator()
+        """ optionsMenu.addSeparator() """
         self.viewLinks = optionsMenu.addAction("View Streetview links")
+        self.viewLinks.setVisible(False)
         self.viewLinks.setCheckable(True)
         self.viewLinks.setChecked(True)
         self.viewAddress = optionsMenu.addAction("View Streetview address")
+        self.viewAddress.setVisible(False)
         self.viewAddress.setCheckable(True)
         self.viewAddress.setChecked(False)
         self.imageDateControl = optionsMenu.addAction("View Streetview image date")
+        self.imageDateControl.setVisible(False)
         self.imageDateControl.setCheckable(True)
         self.imageDateControl.setChecked(False)
         self.viewZoomControl = optionsMenu.addAction("View Streetview zoom control")
+        self.viewZoomControl.setVisible(False)
         self.viewZoomControl.setCheckable(True)
         self.viewZoomControl.setChecked(False)
         self.viewPanControl = optionsMenu.addAction("View Streetview pan control")
+        self.viewPanControl.setVisible(False)
         self.viewPanControl.setCheckable(True)
         self.viewPanControl.setChecked(False)
         self.clickToGoControl = optionsMenu.addAction("Streetview click to go")
+        self.clickToGoControl.setVisible(False)
         self.clickToGoControl.setCheckable(True)
         self.clickToGoControl.setChecked(True)
         self.checkFollow.toggled.connect(self.updateRotate)
@@ -202,11 +216,9 @@ class go2streetview(gui.QgsMapTool):
         self.viewPanControl.toggled.connect(self.updateSVOptions)
         self.clickToGoControl.toggled.connect(self.updateSVOptions)
         self.showCoverage.toggled.connect(self.showCoverageLayer)
-        contextMenu.addSeparator()
+        """ contextMenu.addSeparator() """
         self.showWebInspector = contextMenu.addAction("Show web inspector for debugging")
         self.showWebInspector.triggered.connect(self.showWebInspectorAction)
-        self.aboutItem = contextMenu.addAction("About plugin")
-        self.aboutItem.triggered.connect(self.aboutAction)
 
         self.view.btnMenu.setMenu(contextMenu)
         self.view.btnMenu.setPopupMode(QtWidgets.QToolButton.InstantPopup)
@@ -550,8 +562,12 @@ class go2streetview(gui.QgsMapTool):
 
     def refreshWidget(self, new_lon, new_lat):
         if self.actualPOV['lat'] != 0.0:
-            self.gswDialogUrl = os.path.join(self.dirPath,'res','g2sv.html?lat=' + str(new_lat) + "&long=" + str(new_lon) + "&width=" + str(self.viewWidth) + "&height=" + str(self.viewHeight) + "&heading=" + str(self.heading) + "&APIkey=" + self.APIkey)
-            self.view.SV.load(QtCore.QUrl('file:///' + QtCore.QDir.fromNativeSeparators(self.gswDialogUrl)))
+            self.backendUrl = self.APIkey + '/qgis.php'
+            self.gswDialogUrl = self.backendUrl + '?lat=' + str(
+                new_lat) + "&long=" + str(new_lon) + "&width=" + str(
+                self.viewWidth) + "&height=" + str(self.viewHeight) + "&heading=" + str(
+                self.heading)
+            self.view.SV.load(QtCore.QUrl(self.gswDialogUrl))
 
     def endRefreshWidget(self):
         self.view.SV.loadFinished.disconnect()
@@ -694,10 +710,11 @@ class go2streetview(gui.QgsMapTool):
         self.viewHeight=self.view.size().height()
         self.viewWidth=self.view.size().width()
 
-        self.gswDialogUrl = os.path.join(self.dirPath,'res','g2sv.html?lat=' + str(
+        self.backendUrl = self.APIkey + '/qgis.php'
+        self.gswDialogUrl = self.backendUrl + '?lat=' + str(
             self.pointWgs84.y()) + "&long=" + str(self.pointWgs84.x()) + "&width=" + str(
             self.viewWidth) + "&height=" + str(self.viewHeight) + "&heading=" + str(
-            self.heading) + "&APIkey=" + self.APIkey)
+            self.heading)
 
         self.headingGM = math.trunc(round (self.heading / 90) * 90)
         self.bbeUrl = os.path.join(self.dirPath, "res","g2gm.html?lat=" + str(self.pointWgs84.y()) + "&long=" + str(
@@ -708,7 +725,9 @@ class go2streetview(gui.QgsMapTool):
         core.QgsMessageLog.logMessage(QtCore.QUrl(self.gswDialogUrl).toString(), tag="go2streetview", level=core.Qgis.Info)
         core.QgsMessageLog.logMessage(self.bbeUrl, tag="go2streetview", level=core.Qgis.Info)
         self.httpConnecting = True
-        self.view.SV.load(QtCore.QUrl('file:///'+QtCore.QDir.fromNativeSeparators(self.gswDialogUrl)))
+        self.view.SV.settings().clearMemoryCaches()
+        self.view.SV.load(QtCore.QUrl(self.gswDialogUrl))
+        self.view.BE.settings().clearMemoryCaches()
         self.view.BE.load(QtCore.QUrl('file:///'+QtCore.QDir.fromNativeSeparators(self.bbeUrl)))
         self.view.SV.show()
 

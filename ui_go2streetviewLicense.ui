@@ -6,17 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>354</height>
+    <width>470</width>
+    <height>50</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Licence and Terms of services</string>
+   <string>Change Project</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTextBrowser" name="textBrowser">
-     <property name="html">
+      <property name="visible">
+        <bool>false</bool>
+      </property>
+      <property name="html">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -38,12 +41,15 @@ p, li { white-space: pre-wrap; }
    <item>
     <widget class="QLineEdit" name="APIkey">
      <property name="placeholderText">
-      <string>insert your Google Maps API key here</string>
+      <string>Insert your Web Player URL or Instant Player URL here</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="checkGoogle">
+     <property name="visible">
+       <bool>false</bool>
+     </property>
      <property name="text">
       <string>I read and agree to the Google Maps Terms of Service</string>
      </property>
