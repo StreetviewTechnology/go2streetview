@@ -21,19 +21,15 @@ email=enricofer@gmail.com,jan.mantkowski@applied-streetview.com
 
 # Optional items:
 
-# Uncomment the following line and add your changelog entries:
-changelog =v8.2 - 07/08/2018
-  1) Added Applied Streetview player support
-changelog =v8.1 - 23/02/2018
-  1) log level api break issue fixed
-  2) bing oblique icon not visible issue fixed
+# about
 about = Go2streetview allows to get a window with Applied Streetview Player by clicking and dragging the cursor on map to set location and direction of the desired view. Features: Automatic SRS conversion, Transparent proxying, View position on map, Take Snapshots of current view, Dockable Dialog Windows, Overlay info layer support, Map follows Streetview, Streetview service coverage
+
 # tags are comma separated with spaces allowed
-tags = google, street, view, streetview, bing, bird s eye, snapshot, nominating, overlay, markers
+tags = street, view, streetview, bing, bird s eye, snapshot, nominating, overlay, markers
 
 homepage=http://geogear.wordpress.com
-tracker=https://github.com/enricofer/go2streetview/issues
-repository=https://github.com/enricofer/go2streetview
+tracker=https://github.com/StreetviewTechnology/go2streetview/issues
+repository=https://github.com/StreetviewTechnology/go2streetview
 icon=icoStreetview.png
 # experimental flag
 experimental=False
