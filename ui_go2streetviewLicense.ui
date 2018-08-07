@@ -50,6 +50,9 @@ p, li { white-space: pre-wrap; }
      <property name="visible">
        <bool>false</bool>
      </property>
+     <property name="checked">
+       <bool>true</bool>
+     </property>
      <property name="text">
       <string>I read and agree to the Google Maps Terms of Service</string>
      </property>
