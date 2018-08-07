@@ -562,7 +562,7 @@ class go2streetview(gui.QgsMapTool):
 
     def refreshWidget(self, new_lon, new_lat):
         if self.actualPOV['lat'] != 0.0:
-            self.backendUrl = self.APIkey + '/qgis.php'
+            self.backendUrl = self.APIkey + '/plugins/qgis/'
             self.gswDialogUrl = self.backendUrl + '?lat=' + str(
                 new_lat) + "&long=" + str(new_lon) + "&width=" + str(
                 self.viewWidth) + "&height=" + str(self.viewHeight) + "&heading=" + str(
@@ -710,7 +710,7 @@ class go2streetview(gui.QgsMapTool):
         self.viewHeight=self.view.size().height()
         self.viewWidth=self.view.size().width()
 
-        self.backendUrl = self.APIkey + '/qgis.php'
+        self.backendUrl = self.APIkey + '/plugins/qgis'
         self.gswDialogUrl = self.backendUrl + '?lat=' + str(
             self.pointWgs84.y()) + "&long=" + str(self.pointWgs84.x()) + "&width=" + str(
             self.viewWidth) + "&height=" + str(self.viewHeight) + "&heading=" + str(
